@@ -19,7 +19,7 @@ export default function Header() {
             <path d="M12 2 2 7l10 5 10-5-10-5Zm0 8L2 7v4l10 5 10-5V7l-10 3Z" />
           </svg>
         </div>
-        <span>On-Chain Dapps</span>
+        <span>NEXA</span>
       </div>
 
       {/* Hamburger for mobile */}

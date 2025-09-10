@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { WalletModalContext } from "../../context/WalletModalContext.jsx";
 import styles from "./Hero.module.css";
 
 export default function Hero() {
+  const { openWallet } = useContext(WalletModalContext);
   return (
     <section className={styles.hero} id="home">
       <div className={styles.heroContent}>
@@ -14,8 +16,8 @@ export default function Hero() {
         </p>
 
         <div className={styles.cta_all}>
-          <button className={styles.cta_outline}>CONNECT</button>
-          <button className={styles.cta}>GET STARTED</button>
+          <button className={styles.cta_outline} onClick={openWallet}>CONNECT</button>
+          <button className={styles.cta} onClick={openWallet}>GET STARTED</button>
         </div>
       </div>
     </section>
