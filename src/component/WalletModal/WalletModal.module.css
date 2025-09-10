@@ -1,0 +1,156 @@
+/* Overlay pinned to viewport, above everything */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px; /* breathing room on phones */
+  z-index: 2147483647; /* highest practical value */
+  backdrop-filter: blur(6px);
+}
+
+/* Modal container */
+.modal {
+  position: relative;
+  background: #0c1433;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 760px;
+  max-height: 90vh; /* never exceed viewport */
+  overflow-y: auto; /* scroll inside modal only */
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  animation: fadeIn 0.25s ease;
+}
+
+/* Smooth in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional: pretty scrollbar */
+.modal::-webkit-scrollbar {
+  width: 8px;
+}
+.modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.close {
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.sub {
+  color: #a9b7da;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* Grid of wallets */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 16px;
+  padding-bottom: 8px;
+}
+
+/* Card */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: #22d3a3;
+  box-shadow: 0 8px 18px rgba(34, 211, 163, 0.2);
+}
+
+/* Images: block to avoid inline-gap, sized safely */
+.logo {
+  display: block;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.name {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.2;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .modal {
+    max-width: 600px;
+    padding: 20px;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 14px;
+  }
+  .logo {
+    width: 36px;
+    height: 36px;
+  }
+  .name {
+    font-size: 12px;
+  }
+}
+
+/* Phone */
+@media (max-width: 480px) {
+  .modal {
+    max-width: 400px;
+    padding: 16px;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+  }
+  .logo {
+    width: 32px;
+    height: 32px;
+  }
+  .name {
+    font-size: 11px;
+  }
+}

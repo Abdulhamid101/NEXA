@@ -1,0 +1,69 @@
+.section {
+  margin-top: 3rem;
+  padding: 0 20px; /* small side padding for mobile */
+}
+
+.title {
+  margin: 0 0 6px;
+  color: #eaf2ff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.sub {
+  margin: 0 0 16px;
+  color: #a9b7da;
+  text-align: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* ===== Grid Layout ===== */
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 2rem;
+}
+
+/* ===== Responsive Breakpoints ===== */
+
+/* Large Tablets - 2 columns */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .sub {
+    font-size: 0.95rem;
+  }
+}
+
+/* Mobile - 1 column */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .section {
+    padding: 0 10px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .sub {
+    font-size: 0.9rem;
+  }
+}

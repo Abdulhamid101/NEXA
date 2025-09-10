@@ -1,0 +1,22 @@
+.Why_all{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 80px 20px;
+    /* background: #0a162c; */
+}
+
+.Why_all h1{
+    color: #fff;
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.Why_all p{
+    color: #a9b7da;
+    max-width: 560px;
+    text-align: center;
+    margin-bottom: 24px;
+}
