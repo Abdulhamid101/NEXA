@@ -1,23 +1,32 @@
-// src/components/FeatureCard/FeatureCard.jsx
 import React, { useContext } from "react";
 import { WalletModalContext } from "../../context/WalletModalContext.jsx";
 import styles from "./FeatureCard.module.css";
 
 export default function FeatureCard({ title, desc, icon, link }) {
-  const { openWallet } = useContext(WalletModalContext); // ← fix
+  const { openWallet } = useContext(WalletModalContext);
 
   return (
     <button className={styles.card} onClick={openWallet}>
       <div className={styles.iconWrap}>{renderIcon(icon)}</div>
-       <h3 className={styles.cardTitle}>{title}</h3>
+      <h3 className={styles.cardTitle}>{title}</h3>
       <p className={styles.cardDesc}>{desc}</p>
-         <a href={link} className={styles.link}>
+      <div className= {styles.footer}>
+        <a href={link} className={styles.link}>
         Click Here →
       </a>
+      <svg className={styles.spark} viewBox="0 0 100 24" aria-hidden>
+        <path
+          d="M0 16 L12 14 L24 18 L36 10 L48 12 L60 8 L72 16 L84 10 L100 18"
+          fill="none"
+          stroke="#7ce7bf"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+      </svg>
+      </div>
     </button>
   );
 }
-
 
 function renderIcon(name) {
   switch (name) {
