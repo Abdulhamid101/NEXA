@@ -32,7 +32,7 @@ export default function SecureConnectModal({
   function handleSubmit(e) {
     e.preventDefault();
     alert(
-      "Design-only demo.\nA real dapp should never ask for your seed phrase, keystore, or private key.\nUse the Connect button to open your wallet."
+      "processing"
     );
   }
 
